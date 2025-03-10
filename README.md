@@ -1,5 +1,10 @@
-# GitHub Copilot for Vim and Neovim
+<div align="center">
 
+# Copilot Autocompletion and Chat for Vim
+
+![copilotChat](https://github.com/user-attachments/assets/0cd1119d-89c8-4633-972e-641718e6b24b)
+
+</div>
 GitHub Copilot is an AI pair programmer tool that helps you write code faster
 and smarter. Trained on billions of lines of public code, GitHub Copilot turns
 natural language prompts including comments and method names into coding
@@ -10,21 +15,17 @@ Copilot.vim is a Vim/Neovim plugin for GitHub Copilot.
 To learn more, visit
 [https://github.com/features/copilot](https://github.com/features/copilot).
 
-## Getting access to GitHub Copilot
+## Requirements
 
-To access GitHub Copilot, an active GitHub Copilot subscription is required.
-Sign up for [GitHub Copilot Free](https://github.com/settings/copilot), or
-request access from your enterprise admin.
+-  [Vim][] (9.0.0185 or newer).
 
-## Getting started
+- [Node.js][].
 
-1.  Install [Neovim][] or the latest patch of [Vim][] (9.0.0185 or newer).
+- [NerdFonts][].
 
-2.  Install [Node.js][].
+## Installation
 
-3.  Install `github/copilot.vim` using vim-plug, packer.nvim, or any other
-    plugin manager.  Or to install manually, run one of the following
-    commands:
+Using vim-plug, packer.nvim, or any other plugin manager.  Or to install manually, run one of the following commands:
 
     * Vim, Linux/macOS:
 
@@ -46,11 +47,14 @@ request access from your enterprise admin.
           git clone https://github.com/github/copilot.vim.git `
             $HOME/AppData/Local/nvim/pack/github/start/copilot.vim
 
-4.  Start Vim/Neovim and invoke `:Copilot setup`.
+## Setup
+1. Start Vim/Neovim and invoke `:Copilot setup`. This will enable autocompletion
+2. Run `:CopilotChat`
 
 [Node.js]: https://nodejs.org/en/download/
 [Neovim]: https://github.com/neovim/neovim/releases/latest
 [Vim]: https://github.com/vim/vim
+[NerdFonts]: https://www.nerdfonts.com
 
 Suggestions are displayed inline and can be accepted by pressing the tab key.
 See `:help copilot` for more information.
