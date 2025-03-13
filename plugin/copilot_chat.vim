@@ -8,16 +8,22 @@ let s:token_headers = [
   \ 'User-Agent: GithubCopilot/1.155.0',
   \ 'Accept-Encoding: gzip,deflate,br',
   \ 'Editor-Plugin-Version: copilot.vim/1.16.0',
-  \ 'Editor-Version: Neovim/0.6.1',
+  \ 'Editor-Version: vim/9.0.1',
   \ 'Content-Type: application/json',
   \ ]
+let s:chat_buffer = -1
+let s:chat_count = 1
 
 function! UserInputSeparator()
   let l:width = winwidth(0)-2
   let l:separator = " "
   let l:separator .= repeat('━', l:width)
-  call append(line('$'), l:separator)
-  call append(line('$'), '')
+  call appendbufline(s:chat_buffer, line('$'), l:separator)
+  call appendbufline(s:chat_buffer, line('$'), '')
+  let l:win_id = bufwinid(s:chat_buffer)
+  if l:win_id != -1
+    call win_execute(l:win_id, 'normal! G')
+  endif
 endfunction
 
 function! CopilotChat()
@@ -31,20 +37,24 @@ function! CopilotChat()
   setlocal norelativenumber
   setlocal wrap
   set filetype=markdown
+  execute 'file CopilotChat-' . s:chat_count
+  let s:chat_count += 1
+  let s:chat_buffer = bufnr('%')
 
-  " Set the buffer name to indicate it's a chat window
-  file CopilotChat
-
+  nnoremap <buffer> <leader>cs :SubmitChatMessage<CR>
+  nnoremap <buffer> <CR> :SubmitChatMessage<CR>
   syntax match CopilotWelcome /^Welcome to Copilot Chat!.*$/
-  syntax match CopilotSeparatorIcon /^/ containedin=CopilotSeparatorLine
-  syntax match CopilotSeparatorIcon /^/ containedin=CopilotSeparatorLine
+  syntax match CopilotSeparatorIcon /^/
+  syntax match CopilotSeparatorIcon /^/
   syntax match CopilotSeparatorLine / ━\+$/
+  syntax match CopilotWaiting /Waiting*./
   
   highlight CopilotWelcome ctermfg=205 guifg=#ff69b4
+  highlight CopilotWaiting ctermfg=205 guifg=#ff69b4
   highlight CopilotSeparatorIcon ctermfg=45 guifg=#00d7ff
   highlight CopilotSeparatorLine ctermfg=205 guifg=#ff69b4
 
-  call append(0, 'Welcome to Copilot Chat! Type your message below:')
+  call appendbufline(s:chat_buffer, 0, 'Welcome to Copilot Chat! Type your message below:')
   call UserInputSeparator()
 
   normal! G
@@ -160,12 +170,11 @@ function! CheckDeviceToken()
 endfunction
 
 function! UpdateWaitingDots()
-  let l:line = line('$')
-  let l:current_text = getline(l:line)
+  let l:current_text = getbufline(s:chat_buffer, '$')[0]
   if l:current_text =~ '^Waiting for response'
       let l:dots = len(matchstr(l:current_text, '\..*$'))
       let l:new_dots = (l:dots % 3) + 1
-      call setline(l:line, 'Waiting for response' . repeat('.', l:new_dots))
+      call setbufline(s:chat_buffer, '$', 'Waiting for response' . repeat('.', l:new_dots))
   endif
   return 1
 endfunction
@@ -174,6 +183,7 @@ function! AsyncRequest(message)
     let s:curl_output = []
     let l:url = 'https://api.githubcopilot.com/chat/completions'
 
+    " TODO: just make this a call to GetChatToken and abstract the entire chain out of this function
     if filereadable(s:device_token_file)
       let l:bearer_token = join(readfile(s:device_token_file), "\n")
     else
@@ -181,9 +191,12 @@ function! AsyncRequest(message)
     endif
   
     let l:chat_token = GetChatToken(l:bearer_token)
-    call append(line('$'), "Waiting for response")
+    call appendbufline(s:chat_buffer, line('$'), 'Waiting for response')
     let s:waiting_timer = timer_start(500, {-> UpdateWaitingDots()}, {'repeat': -1})
 
+    " for knowledge bases its just an attachment as the content
+    "{'content': '<attachment id="kb:Name">\n#kb:\n</attachment>', 'role': 'user'}
+    " for files similar
     let l:messages = [{'content': a:message, 'role': 'user'}]
     let l:data = json_encode({
           \ 'intent': v:false,
@@ -236,10 +249,9 @@ function! HandleCurlClose(channel, msg)
     let l:width = winwidth(0)-2
     let l:separator = " "
     let l:separator .= repeat('━', l:width)
-    call append(line('$'), l:separator)
-    call append(line('$'), split(l:result, "\n"))
+    call appendbufline(s:chat_buffer, '$', l:separator)
+    call appendbufline(s:chat_buffer, '$', split(l:result, "\n"))
     call UserInputSeparator()
-    normal! G
 endfunction
 
 function! HandleCurlOutput(channel, msg)
@@ -249,5 +261,4 @@ endfunction
 command! CopilotChat call CopilotChat()
 command! SubmitChatMessage call SubmitChatMessage()
 
-nnoremap <buffer> <leader>cs :SubmitChatMessage<CR>
 nnoremap <leader>cc :CopilotChat<CR>

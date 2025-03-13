@@ -23,32 +23,26 @@ To learn more, visit
 
 - [NerdFonts][].
 
+## Commands
+| Command | Description |
+| ------- | ----------- |
+| `:CopilotChat` | Opens a new copilot window (default vsplit right) |
+| X`:CopilotConfig` | Open `config.json` for plugin default settings |
+| X`:CopilotPrompts` | View / select prompt templates |
+| X`:CopilotModels` | View available modes / select active model |
+
+## Key Mappings
+| Location | Insert | Normal | Action |
+| ---- | ---- | ---- |
+| `global` | - | `<Leader-cc>` | Opens a new chat window `:CopilotChat` |
+| `<buffer>` | - | `<CR>` | Submit current prompt |
+
 ## Installation
 
-Using vim-plug, packer.nvim, or any other plugin manager.  Or to install manually, run one of the following commands:
-
-    * Vim, Linux/macOS:
-
-          git clone https://github.com/github/copilot.vim.git \
-            ~/.vim/pack/github/start/copilot.vim
-
-    * Neovim, Linux/macOS:
-
-          git clone https://github.com/github/copilot.vim.git \
-            ~/.config/nvim/pack/github/start/copilot.vim
-
-    * Vim, Windows (PowerShell command):
-
-          git clone https://github.com/github/copilot.vim.git `
-            $HOME/vimfiles/pack/github/start/copilot.vim
-
-    * Neovim, Windows (PowerShell command):
-
-          git clone https://github.com/github/copilot.vim.git `
-            $HOME/AppData/Local/nvim/pack/github/start/copilot.vim
+Using vim-plug, packer.nvim, or any other plugin manager. 
 
 ## Setup
-1. Start Vim/Neovim and invoke `:Copilot setup`. This will enable autocompletion
+1. Start Vim and invoke `:Copilot setup`. This will enable autocompletion
 2. Run `:CopilotChat`
 
 [Node.js]: https://nodejs.org/en/download/
@@ -58,9 +52,3 @@ Using vim-plug, packer.nvim, or any other plugin manager.  Or to install manuall
 
 Suggestions are displayed inline and can be accepted by pressing the tab key.
 See `:help copilot` for more information.
-
-## Troubleshooting
-
-We’d love to get your help in making GitHub Copilot better!  If you have
-feedback or encounter any problems, please reach out on our [Feedback
-forum](https://github.com/orgs/community/discussions/categories/copilot).
