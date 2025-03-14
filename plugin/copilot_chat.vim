@@ -3,6 +3,7 @@ scriptencoding utf-8
 let s:plugin_dir = expand('<sfile>:p:h:h')
 let s:device_token_file = s:plugin_dir . "/.device_token"
 let s:chat_token_file = s:plugin_dir . "/.chat_token"
+let s:chat_config_file = s:plugin_dir ."/config.json"
 let s:token_headers = [
   \ 'Accept: application/json',
   \ 'User-Agent: GithubCopilot/1.155.0',
@@ -13,6 +14,7 @@ let s:token_headers = [
   \ ]
 let s:chat_buffer = -1
 let s:chat_count = 1
+let s:default_model = "gpt-4o"
 
 function! UserInputSeparator()
   let l:width = winwidth(0)-2
@@ -26,8 +28,22 @@ function! UserInputSeparator()
   endif
 endfunction
 
+function! LoadConfig()
+  if filereadable(s:chat_config_file)
+    let l:config = json_decode(join(readfile(s:chat_config_file), "\n"))
+    let s:default_model = l:config.model
+  else
+    let l:config = {'model': s:default_model}
+    call writefile([json_encode(l:config)], s:chat_config_file)
+  endif
+endfunction
+
+function! ViewConfig()
+  vsplit s:chat_config_file
+endfunction
+
 function! CopilotChat()
-  " Open a new split window for the chat
+  call LoadConfig()
   vsplit
   enew
   setlocal buftype=nofile
@@ -205,7 +221,7 @@ function! AsyncRequest(message)
     let l:messages = [{'content': a:message, 'role': 'user'}]
     let l:data = json_encode({
           \ 'intent': v:false,
-          \ 'model': 'gpt-4o',
+          \ 'model': s:default_model,
           \ 'temperature': 0,
           \ 'top_p': 1,
           \ 'n': 1,
@@ -265,5 +281,6 @@ endfunction
 
 command! CopilotChat call CopilotChat()
 command! SubmitChatMessage call SubmitChatMessage()
+command! CopilotConfig call ViewConfig()
 
 nnoremap <leader>cc :CopilotChat<CR>

@@ -11,7 +11,7 @@ Nvim folks will be able to use [CopilotChat.nvim](https://github.com/CopilotC-Nv
 
 ## Requirements
 
--  [Vim][] (9.0.0185 or newer).
+- [Vim][] (9.0.0185 or newer).
 
 - [Node.js][].
 
@@ -21,7 +21,7 @@ Nvim folks will be able to use [CopilotChat.nvim](https://github.com/CopilotC-Nv
 | Command | Description |
 | ------- | ----------- |
 | `:CopilotChat` | Opens a new copilot window (default vsplit right) |
-| X`:CopilotConfig` | Open `config.json` for plugin default settings |
+| `:CopilotConfig` | Open `config.json` for default settings when opening a new CopilotChat window |
 | X`:CopilotPrompts` | View / select prompt templates |
 | X`:CopilotModels` | View available modes / select active model |
 
