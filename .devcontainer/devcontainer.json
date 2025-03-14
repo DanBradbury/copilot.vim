@@ -5,7 +5,10 @@
         "vscode": {
             "extensions": [
                 "XadillaX.viml"
-            ]
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash"
+            }
         }
     }
 }

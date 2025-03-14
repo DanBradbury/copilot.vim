@@ -36,13 +36,13 @@ function! CopilotChat()
   setlocal nonumber
   setlocal norelativenumber
   setlocal wrap
-  set filetype=markdown
   execute 'file CopilotChat-' . s:chat_count
   let s:chat_count += 1
   let s:chat_buffer = bufnr('%')
 
   nnoremap <buffer> <leader>cs :SubmitChatMessage<CR>
   nnoremap <buffer> <CR> :SubmitChatMessage<CR>
+
   syntax match CopilotWelcome /^Welcome to Copilot Chat!.*$/
   syntax match CopilotSeparatorIcon /^/
   syntax match CopilotSeparatorIcon /^/
@@ -53,6 +53,11 @@ function! CopilotChat()
   highlight CopilotWaiting ctermfg=205 guifg=#ff69b4
   highlight CopilotSeparatorIcon ctermfg=45 guifg=#00d7ff
   highlight CopilotSeparatorLine ctermfg=205 guifg=#ff69b4
+
+  if !exists("g:syntax_on")
+    syntax enable
+  endif
+  set termguicolors
 
   call appendbufline(s:chat_buffer, 0, 'Welcome to Copilot Chat! Type your message below:')
   call UserInputSeparator()
