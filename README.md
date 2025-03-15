@@ -23,13 +23,14 @@ Nvim folks will be able to use [CopilotChat.nvim](https://github.com/CopilotC-Nv
 | `:CopilotChat` | Opens a new copilot window (default vsplit right) |
 | `:CopilotConfig` | Open `config.json` for default settings when opening a new CopilotChat window |
 | X`:CopilotPrompts` | View / select prompt templates |
-| X`:CopilotModels` | View available modes / select active model |
+| `:CopilotModels` | View available modes / select active model |
 
 ## Key Mappings
 | Location | Insert | Normal | Action |
 | ---- | ---- | ---- | ---- |
 | `global` | - | `<Leader-cc>` | Opens a new chat window `:CopilotChat` |
 | `<buffer>` | - | `<CR>` | Submit current prompt |
+| `:CopilotModels` `<buffer>` | - | `<CR>` | Select the model on the current line for future chat use |
 
 ## Installation
 

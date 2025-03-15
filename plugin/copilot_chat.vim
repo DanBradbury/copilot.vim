@@ -43,8 +43,27 @@ function! ViewConfig()
   vsplit s:chat_config_file
 endfunction
 
+function! ViewModels()
+  vsplit
+  enew
+  setlocal buftype=nofile
+  setlocal bufhidden=hide
+  setlocal noswapfile
+  call appendbufline(bufnr('%'), 0, 'Available Models:')
+  call appendbufline(bufnr('%'), '$', s:available_models)
+  nnoremap <buffer> <CR> :SelectModel<CR>
+endfunction
+
+function! SelectModel()
+  let l:selected_model = getline('.')
+  let s:default_model = l:selected_model
+  let l:config = json_decode(join(readfile(s:chat_config_file), "\n"))
+  let l:config.model = l:selected_model
+  call writefile([json_encode(l:config)], s:chat_config_file)
+endfunction
+
 function ConfirmSignin()
-    call GetChatToken()
+    call FetchModels(GetChatToken())
 endfunction
 
 function! CopilotChat()
@@ -203,11 +222,10 @@ function! GetChatToken(fetch_new = v:false)
   endif
 endfunction
 
-function! ValidateToken()
-  let l:chat_token = GetChatToken()
+function! FetchModels(chat_token)
   let l:chat_headers = [
     \ "Content-Type: application/json",
-    \ "Authorization: Bearer " . l:chat_token,
+    \ "Authorization: Bearer " . a:chat_token,
     \ "Editor-Version: vscode/1.80.1"
     \ ]
 
@@ -221,9 +239,14 @@ function! ValidateToken()
         endif
     endfor
     let s:available_models = l:model_list
-  catch
-    let l:chat_token = GetChatToken(v:true)
   endtry
+
+  return l:response
+endfunction
+
+function! ValidateToken()
+  let l:chat_token = GetChatToken()
+  let l:response = FetchModels(l:chat_token)
 
   return l:chat_token
 endfunction
@@ -313,5 +336,7 @@ endfunction
 command! CopilotChat call CopilotChat()
 command! SubmitChatMessage call SubmitChatMessage()
 command! CopilotConfig call ViewConfig()
+command! CopilotModels call ViewModels()
+command! SelectModel call SelectModel()
 
 nnoremap <leader>cc :CopilotChat<CR>
