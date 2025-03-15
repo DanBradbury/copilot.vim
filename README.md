@@ -36,11 +36,10 @@ Nvim folks will be able to use [CopilotChat.nvim](https://github.com/CopilotC-Nv
 Using vim-plug, Vundle, or any other plugin manager. 
 
 ## Setup
-1. Run `:CopilotChat` to open a chat window
+1. Run `:CopilotChat` to open a chat window. You will be prompted to setup your device on first use.
 2. Write your prompt under the line separator and press `<Enter>` in normal mode / `:SubmitChatMessage`
-3. If you have not registered your device + generated a token you will be prompted to complete that process
-4. On completion / if you have already gone through initial setup you should see a `Waiting for response..` in the buffer to indicate work is being done
-5. 🎉!
+3. You should see a `Waiting for response..` in the buffer to indicate work is being done in the background
+4. 🎉!
 
 [Node.js]: https://nodejs.org/en/download/
 [Neovim]: https://github.com/neovim/neovim/releases/latest
